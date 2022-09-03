@@ -185,7 +185,8 @@ const App = () => {
     useEffect(() => {
         checkIfWalletIsConnected()
         getNFtsCounts()
-    }, [nftsminted, currentAccount])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [nftsminted, currentAccount]) 
 
     return (
         <div className='App'>
