@@ -7,7 +7,7 @@ import Loader from './Loader'
 
 // CONSTANTS
 const LINKEDIN_LINK = 'https://www.linkedin.com/in/salik-jamal/'
-const OPENSEA_LINK = 'https://testnets.opensea.io/collection/squarenft-ya8w7uacqt'
+const OPENSEA_LINK = 'https://testnets.opensea.io/collection/squarenft-ykndg2fwd7'
 const TOTAL_MINT_COUNT = 50
 const RINKEBY_CHAINID = '0x4'
     
