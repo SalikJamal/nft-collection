@@ -8,10 +8,10 @@ import '@openzeppelin/contracts/utils/Strings.sol';
 import { Base64 } from './libraries/Base64.sol';
 import 'hardhat/console.sol';
 
-// We inherit the contract we imported, this means we'll have access to the inherited contract's methods.
+
 contract MyNFT is ERC721URIStorage {
 
-    // Magic given to us by OpenZeppelin to help us keep track of tokenIds.
+    // Using openzeppelin Counters library to keep track of tokenIds
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -26,10 +26,8 @@ contract MyNFT is ERC721URIStorage {
 
     event NFTMinted(address sender, uint tokenId);
 
-    // We need to pass the name of our NFTs token and its symbol.
-    constructor() ERC721 ("SquareNFT", "SQUARE") {
-        console.log("This is my NFT contract. Woah!");
-    }
+    // Pass the name of our NFTs token and its symbol.
+    constructor() ERC721 ("SquareNFT", "SQUARE") {}
 
     function pickRandomFirstWord(uint tokenId) public view returns(string memory) {
         uint rand = random(string(abi.encodePacked("FIRST_WORD", Strings.toString(tokenId))));
@@ -74,13 +72,21 @@ contract MyNFT is ERC721URIStorage {
         string memory third = pickRandomThirdWord(newItemId);
         string memory combinedWord = string(abi.encodePacked(first, second, third));
 
+        // Generate random SVG color
         string memory randomColor = pickRandomColor(newItemId);
-        string memory finalSvg = string(abi.encodePacked(svgPartOne, randomColor, svgPartTwo, combinedWord, "</text></svg>"));
+        // Combine all the random combinations into an the final SVG
+        string memory finalSvg = string(
+            abi.encodePacked(
+                svgPartOne, randomColor, svgPartTwo, combinedWord, 
+                "</text></svg>"
+            )
+        );
 
         string memory json = Base64.encode(bytes(string(abi.encodePacked(
             '{"name": "',
             combinedWord,
-            '", "description": "A highly acclaimed collection of squares.", "image": "data:image/svg+xml;base64,',
+            '", "description": "A highly acclaimed collection of squares.", '
+            '"image": "data:image/svg+xml;base64,',
             Base64.encode(bytes(finalSvg)),
             '"}'
         ))));
@@ -88,17 +94,11 @@ contract MyNFT is ERC721URIStorage {
 
         string memory finalTokenUrl = string(abi.encodePacked("data:application/json;base64,", json));
 
-        console.log("\n--------------------");
-        console.log(finalTokenUrl);
-        console.log("--------------------\n");
-
         // Actually mint the NFT to sender using msg.sender.
         _safeMint(msg.sender, newItemId);
 
         // Set the NFTs data.
         _setTokenURI(newItemId, finalTokenUrl);
-
-        console.log('An NFT w/ ID %s has been minted to %s', newItemId, msg.sender);
 
         // Increment the counter for when the next NFT is minted.
         _tokenIds.increment();
